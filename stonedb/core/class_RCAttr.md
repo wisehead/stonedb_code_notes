@@ -1,6 +1,12 @@
 #1.class RCAttr
 
 ```cpp
+/*
+● stonedb底层存储分为PackInt和PackStr两种类型，其中涉及到精度损失的有两部分：一部分index编码中，一部分在PackInt转码存储到Data中。这两部分可能都需要更改。
+● RCAttr是PhysicalColumn的实现类，可实现加载data pack，并转换成对应的PackInt以及PackStr基础存储类型。
+● 查询时要创建RCTable的包装类TempTable，并包装了attr，filter以及multiindex，实现过滤以及内存加载增强功能。
+● PackInt编码存储到Data文件时，为啥要减去一个dpn.min_i，怕溢出？
+*/
 class RCAttr final : public mm::TraceableObject, public PhysicalColumn, public PackAllocator {
   friend class RCTable;
  private:
